@@ -8,6 +8,25 @@
 <body>
     <h1>Welcome to the Dashboard!</h1>
     <p>Hello, {{ user.username }}!</p>
-    <a href="{% url 'logout' %}">Logout</a>
+
+    <!-- Display the list of turfs owned by the user -->
+    <h2>Your Turfs:</h2>
+    {% if user_turfs %}
+        <ul>
+            {% for turf in user_turfs %}
+                <li>
+                    <strong>{{ turf.name }}</strong> - {{ turf.location }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You don’t own any turfs yet.</p>
+    {% endif %}
+
+    <!-- Logout Button -->
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
 </body>
 </html>

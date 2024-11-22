@@ -5,6 +5,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .forms import EnterpriseUserRegistrationForm
+from .models import Turf
 
 
 # Registration View
@@ -14,7 +15,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)  # Log the user in after successful registration
-            return redirect('dashboard')  # Redirect to the dashboard after registration
+            return redirect('login')  # Redirect to the dashboard after registration
     else:
         form = EnterpriseUserRegistrationForm()
     return render(request, 'theapp/register.html', {'form': form})
@@ -33,4 +34,6 @@ class EnterpriseLogoutView(LogoutView):
 # Protected Dashboard View
 @login_required
 def dashboard(request):
-    return render(request, 'theapp/dashboard.html')
+    # Get all turfs owned by the logged-in user
+    user_turfs = Turf.objects.filter(owner=request.user)
+    return render(request, 'theapp/dashboard.html', {'user_turfs': user_turfs})
