@@ -15,4 +15,4 @@ __pycache__/
 # Ignore Django static files
 staticfiles/
 
-.idea
+.idea/
