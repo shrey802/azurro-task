@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views  # Import views from the same directory
+from .views import OwnerCreateView, BookingCreateView
 
 urlpatterns = [
-    path("test/", views.test_view),  # Route to your test_view
+    path("owners/", OwnerCreateView.as_view(), name="create_owner"),
+    path("bookings/", BookingCreateView.as_view(), name="create_booking"),
 ]
