@@ -1,34 +1,38 @@
 <script>
-  import { useState } from 'svelte';
   import axios from 'axios';
-  import { navigate } from 'svelte-routing';  // Used for navigation to the dashboard
+  import { navigate } from 'svelte-routing'; // Used for navigation to the dashboard
 
   let firstName = '';
   let lastName = '';
   let turfName = '';
   let errorMessage = '';
 
-  const handleSubmit = async () => {
+  async function handleSubmit() {
+    errorMessage = ''; // Reset error message
+
     try {
-      const response = await axios.get('http://localhost:8000/api/owners/login', {
+      const response = await axios.get('http://localhost:8000/api/owners/login/', {
         params: {
           first_name: firstName,
           last_name: lastName,
-          turf_name: turfName
-        }
+          turf_name: turfName,
+        },
       });
 
-      if (response.data.length > 0) {
+      if (response.status === 200 && response.data.length > 0) {
         // Successful login, redirect to the dashboard
+        // Optionally store data in localStorage
+        // localStorage.setItem('turf_id', response.data[0]);
         navigate('/dashboard');
       } else {
         // If no matching owner found
         errorMessage = 'Owner not found or invalid credentials.';
       }
     } catch (error) {
-      errorMessage = 'Error while checking credentials, please try again later.';
+      console.error('Error:', error);
+      errorMessage = error.response?.data?.detail || 'Error while checking credentials, please try again later.';
     }
-  };
+  }
 </script>
 
 <style>
