@@ -44,3 +44,25 @@ class BookingByTurfDateView(APIView):
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+
+class OwnerLoginView(APIView):
+    def get(self, request, *args, **kwargs):
+        first_name = request.query_params.get('first_name')
+        last_name = request.query_params.get('last_name')
+        turf_name = request.query_params.get('turf_name')
+
+        if not first_name or not last_name or not turf_name:
+            return JsonResponse({"detail": "First name, last name, and turf name are required."}, status=400)
+
+        # Check if the Owner exists with the provided information
+        owners = Owner.objects.filter(
+            first_name=first_name,
+            last_name=last_name,
+            turf_name=turf_name
+        )
+
+        if owners.exists():
+            return Response([owner.turf_id for owner in owners])  # Return the turf_id for login
+        else:
+            return JsonResponse({"detail": "Owner not found or invalid credentials."}, status=404)
